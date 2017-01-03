@@ -11,6 +11,7 @@ class Grid {
     float cellHeight;
     int cells[6][7];
     unsigned cursorPosition;
+    unsigned filledSpaces;
 
     // functions
     void drawCursor();
@@ -23,4 +24,6 @@ class Grid {
     void draw();
     void moveCursor(direction);
     bool dropToken(player);
+    bool checkEndGame();
+    bool somebodyWon();
 };
