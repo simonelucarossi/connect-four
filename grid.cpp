@@ -11,6 +11,7 @@ Grid::Grid() {
   this->cellWidth  = this->width/7;
   this->cellHeight = this->height/6;
   this->cursorPosition = 0;
+  this->filledSpaces = 0;
 
   for(int i = 0; i < 6; i++) {
     for(int j = 0; j < 7; j++) {
@@ -37,11 +38,20 @@ bool Grid::dropToken(player currentPlayer) {
   for(int i = 5; i >= 0; i--) {
     if(cells[i][this->cursorPosition] == 0) {
       cells[i][this->cursorPosition] = currentPlayer;
+      this->filledSpaces++;
       return true;
     }
   }
 
   return false;
+}
+
+bool Grid::checkEndGame() {
+  if(this->filledSpaces == 6*7) {
+    return true;
+  }
+
+  return somebodyWon();
 }
 
 /*
@@ -118,4 +128,50 @@ void Grid::cell(int i, int j, float* coords) {
 
   // radius
   coords[6] = (cellWidth/100)*25;
+}
+
+bool Grid::somebodyWon() {
+  for(int i = 5; i >= 0; i--) {
+    for(int j = 0; j < 6; j++) {
+      unsigned sameFound = 0;
+
+      if(cells[i][j] == 0) { continue; }
+
+      // controllo a destra
+      for(int delta = 0; delta < 4; delta++) {
+        if(j+delta < 7 && cells[i][j] == cells[i][j+delta]) {
+          sameFound++;
+        }
+      }
+      if(sameFound == 4) {
+        printf("controllo a destra: %d\n", sameFound);
+        return true;
+      }
+      sameFound = 0;
+
+      // controllo in alto
+      for(int delta = 0; delta < 4; delta++) {
+        if(i-delta >= 0 && cells[i][j] == cells[i-delta][j]) { sameFound++; }
+      }
+      if(sameFound == 4) { return true; }
+      sameFound = 0;
+
+      // controllo in alto a sinistra
+      for(int delta = 0; delta < 4; delta++) {
+        if(i-delta >= 0 && j-delta >= 0 && cells[i][j] == cells[i-delta][j-delta]) {
+          sameFound++;
+        }
+      }
+      if(sameFound == 4) { return true; }
+      sameFound = 0;
+
+      // controllo in alto a destra
+      for(int delta = 0; delta < 4; delta++) {
+        if(i-delta >= 0 && j+delta < 7 && cells[i][j] == cells[i-delta][j+delta]) { sameFound++; }
+      }
+      if(sameFound == 4) { return true; }
+    }
+  }
+
+  return false;
 }
