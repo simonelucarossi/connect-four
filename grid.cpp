@@ -144,7 +144,6 @@ bool Grid::somebodyWon() {
         }
       }
       if(sameFound == 4) {
-        printf("controllo a destra: %d\n", sameFound);
         return true;
       }
       sameFound = 0;
